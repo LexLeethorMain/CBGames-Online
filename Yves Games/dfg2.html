@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Da funny gam too</title>
+<style>
+    canvas {
+        border: 1px solid black;
+    }
+</style>
+</head>
+<body>
+<canvas id="gameCanvas" width="800" height="600"></canvas>
+
+<script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Box properties
+    let blueBox = {
+        x: 100,
+        y: 100,
+        width: 50,
+        height: 50,
+        dx: 0,
+        dy: 0,
+        gravity: 0.5,
+        jumpPower: -10,
+        doubleJump: true,
+        grounded: false
+    };
+
+    // Red box properties
+    let redBox = {
+        x: canvas.width - 100,
+        y: 100,
+        width: 50,
+        height: 50,
+        dx: 0,
+        dy: 0,
+        gravity: 0.5,
+        speed: 3
+    };
+
+    // Platform properties
+    let platform = {
+        x: 0,
+        y: canvas.height - 20,
+        width: canvas.width,
+        height: 20,
+        dx: 0
+    };
+
+    // Health bar properties
+    let health = 100;
+
+    // Game state
+    let gameOver = false;
+
+    // Event listeners for WASD keys
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+
+    function handleKeyDown(event) {
+        if (gameOver) return;
+        switch (event.key) {
+            case 'a':
+                blueBox.dx = -5;
+                break;
+            case 'd':
+                blueBox.dx = 5;
+                break;
+            case 'w':
+                if (blueBox.grounded) {
+                    blueBox.dy = blueBox.jumpPower;
+                    blueBox.grounded = false;
+                    blueBox.doubleJump = true;
+                } else if (blueBox.doubleJump) {
+                    blueBox.dy = blueBox.jumpPower;
+                    blueBox.doubleJump = false;
+                }
+                break;
+        }
+    }
+
+    function handleKeyUp(event) {
+        if (gameOver) return;
+        switch (event.key) {
+            case 'a':
+            case 'd':
+                blueBox.dx = 0;
+                break;
+        }
+    }
+
+    function update() {
+        if (gameOver) return;
+
+        // Apply gravity to blue box
+        if (!blueBox.grounded) {
+            blueBox.dy += blueBox.gravity;
+        }
+
+        // Update blue box position
+        blueBox.x += blueBox.dx;
+        blueBox.y += blueBox.dy;
+
+        // Check collision with platform for blue box
+        if (blueBox.y + blueBox.height >= platform.y && blueBox.y + blueBox.height <= platform.y + platform.height) {
+            if (blueBox.x + blueBox.width >= platform.x && blueBox.x <= platform.x + platform.width) {
+                blueBox.y = platform.y - blueBox.height;
+                blueBox.dy = 0;
+                blueBox.grounded = true;
+                blueBox.doubleJump = true; // Reset double jump
+            }
+        } else {
+            blueBox.grounded = false;
+        }
+
+        // Apply gravity to red box
+        redBox.dy += redBox.gravity;
+
+        // Update red box position
+        if (blueBox.x < redBox.x) {
+            redBox.dx = -redBox.speed;
+        } else if (blueBox.x > redBox.x) {
+            redBox.dx = redBox.speed;
+        }
+        redBox.x += redBox.dx;
+        redBox.y += redBox.dy;
+
+        // Check collision with platform for red box
+        if (redBox.y + redBox.height >= platform.y && redBox.y + redBox.height <= platform.y + platform.height) {
+            if (redBox.x + redBox.width >= platform.x && redBox.x <= platform.x + platform.width) {
+                redBox.y = platform.y - redBox.height;
+                redBox.dy = 0;
+            }
+        }
+
+        // Check collision between red and blue box
+        if (
+            blueBox.x < redBox.x + redBox.width &&
+            blueBox.x + blueBox.width > redBox.x &&
+            blueBox.y < redBox.y + redBox.height &&
+            blueBox.y + blueBox.height > redBox.y
+        ) {
+            health -= 10; // Decrease health when they collide
+            // Move the red box away from blue box
+            if (blueBox.x < redBox.x) {
+                redBox.x += 10;
+            } else {
+                redBox.x -= 10;
+            }
+            if (health <= 0) {
+                gameOver = true; // Game over if health reaches zero
+            }
+        }
+
+        // Draw everything
+        draw();
+    }
+
+    function draw() {
+        // Clear canvas
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Draw platform
+        ctx.fillStyle = 'green';
+        ctx.fillRect(platform.x, platform.y, platform.width, platform.height);
+
+        // Draw blue box
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(blueBox.x, blueBox.y, blueBox.width, blueBox.height);
+
+        // Draw red box
+        ctx.fillStyle = 'red';
+        ctx.fillRect(redBox.x, redBox.y, redBox.width, redBox.height);
+
+        // Draw health bar
+        ctx.fillStyle = 'black';
+        ctx.fillRect(10, 10, 200, 20); // Background
+        ctx.fillStyle = 'red';
+        ctx.fillRect(10, 10, health * 2, 20); // Health
+
+        // Draw game over message if game over
+        if (gameOver) {
+            ctx.fillStyle = 'black';
+            ctx.font = '30px Arial';
+            ctx.fillText('Game Over! Press R to restart.', canvas.width / 2 - 150, canvas.height / 2);
+        }
+    }
+
+    // Game loop
+    function gameLoop() {
+        update();
+        requestAnimationFrame(gameLoop);
+    }
+    gameLoop();
+
+    // Event listener for restarting the game
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'r' && gameOver) {
+            restartGame();
+        }
+    });
+
+    // Function to restart the game
+    function restartGame() {
+        blueBox.x = 100;
+        blueBox.y = 100;
+        redBox.x = canvas.width - 100;
+        redBox.y = 100;
+        health = 100;
+        gameOver = false;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chromebook Games</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    .clock {
+      position: fixed;
+      top: 0.5vw;
+      left: 0.5vw;
+      color: white;
+      font-size: 2vw;
+      letter-spacing: 0.3vw;
+      font-family: 'Clock', sans-serif;
+      background-color: #111;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 8px 8px 16px 111, -8px -8px 16px #4d4d4d;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #333;
+      overflow: hidden;
+    }
+
+    .container {
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    .square-button {
+      border: none;
+      cursor: pointer;
+      width: 10vw;
+      height: 10vw;
+      border-radius: 20px;
+      margin: 0.5vw;
+      transition: all 0.7s ease;
+      opacity: 0;
+      transform: translateX(-50px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .square-button.loaded {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .square-button:hover {
+      box-shadow: 0 0 20px 5px rgba(100, 100, 200, 0.5);
+    }
+
+    .square-button:hover {
+      transform: scale(1.1) rotate(360deg);
+    }
+
+    /* Add animation delay for each button */
+    .square-button:nth-child(1) { animation-delay: 0.1s; }
+    .square-button:nth-child(2) { animation-delay: 0.2s; }
+
+
+  </style>
+</head>
+
+<body>
+  <div id="MyClockDisplay" class="clock">07:14:33 PM</div>
+
+<div class="container">
+  <div class="row">
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/NG.png', 'NG/index.html');" style="background-image: url('Imgs/NG.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/GG.jpg', 'GG/CaseClicker.html');" style="background-image: url('Imgs/GG.jpg'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/P8.jpg', 'P8/Pico Hub.html');" style="background-image: url('Imgs/P8.jpg'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/CB.png', 'CB/Index.html');" style="background-image: url('Imgs/CB.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/MC.jpeg', 'SFGames/Eaglercraft 1.8.8.html');" style="background-image: url('Imgs/MC.jpeg'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/GD.jpeg', 'SFGames/Geometry Dash.html');" style="background-image: url('Imgs/GD.jpeg'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/CC.jpg', 'CC/index.html');" style="background-image: url('Imgs/CC.jpg'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/SB.webp', 'SB/index.html');" style="background-image: url('Imgs/SB.webp'); background-size: cover;"></button>
+  </div>
+  <div class="row">
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/SF.jpeg', 'SFGames/Sans Boss Fight.html');" style="background-image: url('Imgs/SF.jpeg'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/DF.png', 'Yves Games/dafunnygam.html');" style="background-image: url('Imgs/DF.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/D1.png', 'Yves Games/dfg2.html');" style="background-image: url('Imgs/D1.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/CG.jpg', 'CG/index.html');" style="background-image: url('Imgs/CG.jpg'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/DW.png', 'DW/index.html');" style="background-image: url('Imgs/DW.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/IT.png', 'Otherstuff/IT.html');" style="background-image: url('Imgs/IT.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/HL.png', 'Otherstuff/HL.html');" style="background-image: url('Imgs/HL.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/EC.png', 'EC/index.html');" style="background-image: url('Imgs/EC.png'); background-size: cover;"></button>
+  </div>
+  <div class="row">
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/DM.jpeg', 'DM/index.html');" style="background-image: url('Imgs/DM.jpeg'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'CA/favicon.ico', 'CA/index.html');" style="background-image: url('CA/favicon.ico'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/MJ.png', 'SFGames/physics.html');" style="background-image: url('Imgs/MJ.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/SP.png', 'SP/index.html');" style="background-image: url('Imgs/SP.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/NP.png', 'NP/index.html');" style="background-image: url('Imgs/NP.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/SC.png', 'SC/index.html');" style="background-image: url('Imgs/SC.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/SM.png', 'SM/index.html');" style="background-image: url('Imgs/SM.png'); background-size: cover;"></button>
+    <button class="square-button loaded" onclick="Load(this, 'Imgs/DA.png', 'DA/index.html');" style="background-image: url('Imgs/DA.png'); background-size: cover;"></button>
+  </div>
+</div>
+
+
+  <script>
+    function showTime() {
+      let date = new Date();
+      let h = date.getHours();
+      let m = date.getMinutes();
+      let s = date.getSeconds();
+      let session = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      h = h < 10 ? "0" + h : h;
+      m = m < 10 ? "0" + m : m;
+      s = s < 10 ? "0" + s : s;
+      let time = h + ":" + m + ":" + s + " " + session;
+      document.getElementById("MyClockDisplay").innerText = time;
+      document.getElementById("MyClockDisplay").textContent = time;
+      setTimeout(showTime, 1000);
+    }
+    showTime();
+
+    // Function to add loaded class to buttons after page load
+    window.addEventListener('load', function() {
+      var buttons = document.querySelectorAll('.square-button');
+      buttons.forEach(function(button) {
+        button.classList.add('loaded');
+      });
+    });
+
+    // Function to show loading animation
+    function Load(button, imageUrl, gameUrl) {
+        window.location.href = gameUrl;}
+    
+  </script>
+
+
+</body></html>

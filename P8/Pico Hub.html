@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Games</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    @import url('Clock.ttf');
+
+    .clock {
+      position: fixed;
+      top: 0.5vw;
+      left: 0.5vw;
+      color: white;
+      font-size: 2vw;
+      letter-spacing: 0.3vw;
+      font-family: 'Clock', sans-serif;
+      background-color: #111;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 8px 8px 16px 111, -8px -8px 16px #4d4d4d;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #333;
+      overflow: hidden;
+    }
+
+    .container {
+      position: fixed;
+      top: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 9999;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: nowrap;
+    }
+
+    .square-button {
+      border: none;
+      cursor: pointer;
+      width: 10vw;
+      height: 10vw;
+      border-radius: 20px;
+      margin: 0.5vw;
+      transition: all 0.7s ease;
+      opacity: 0;
+      transform: translateX(-50px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .square-button.loaded {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .square-button:hover {
+      box-shadow: 0 0 20px 5px rgba(100, 100, 200, 0.5);
+    }
+
+    .square-button:hover {
+      transform: scale(1.1) rotate(360deg);
+    }
+
+    /* Add animation delay for each button */
+    .square-button:nth-child(1) { animation-delay: 0.1s; }
+    .square-button:nth-child(2) { animation-delay: 0.2s; }
+
+
+  </style>
+</head>
+
+<body>
+  <div id="MyClockDisplay" class="clock">07:14:33 PM</div>
+
+<div class="container">
+  <div class="row">
+<button class="square-button" onclick="window.location.href = 'Picohot/index.html';" style="background-image: url('PicoImages/picohot.png'); background-size: cover;"></button>
+<button class="square-button" onclick="window.location.href = 'Ingeste.html';" style="background-image: url('PicoImages/ingeste.png'); background-size: cover;"></button>
+<button class="square-button" onclick="window.location.href = 'Tetris/index.html';" style="background-image: url('PicoImages/Tetris.png'); background-size: cover;"></button>
+<button class="square-button" onclick="window.location.href = 'Pilot8/index.html';" style="background-image: url('PicoImages/Pilot8.png'); background-size: cover;"></button>
+<button class="square-button" onclick="window.location.href = 'pg/index.html';" style="background-image: url('PicoImages/PortalGolf.jpeg'); background-size: cover;"></button>
+<button class="square-button" onclick="window.location.href = 'Terra/index.html';" style="background-image: url('PicoImages/Terra.jpeg'); background-size: cover;"></button>
+  <button class="square-button" onclick="window.location.href = 'dr/index.html';" style="background-image: url('PicoImages/DataRestored.jpeg'); background-size: cover;"></button>
+   </div>
+</div>
+
+  <script>
+    function showTime() {
+      let date = new Date();
+      let h = date.getHours();
+      let m = date.getMinutes();
+      let s = date.getSeconds();
+      let session = h >= 12 ? "PM" : "AM";
+      h = h % 12 || 12;
+      h = h < 10 ? "0" + h : h;
+      m = m < 10 ? "0" + m : m;
+      s = s < 10 ? "0" + s : s;
+      let time = h + ":" + m + ":" + s + " " + session;
+      document.getElementById("MyClockDisplay").innerText = time;
+      document.getElementById("MyClockDisplay").textContent = time;
+      setTimeout(showTime, 1000);
+    }
+    showTime();
+
+    // Function to add loaded class to buttons after page load
+    window.addEventListener('load', function() {
+      var buttons = document.querySelectorAll('.square-button');
+      buttons.forEach(function(button) {
+        button.classList.add('loaded');
+      });
+    });
+
+    // Function to show loading animation
+    function showLoading(button, imageUrl, gameUrl) {
+      var circle = document.createElement("div");
+      circle.classList.add("expand-circle");
+      button.appendChild(circle);
+
+      // Redirect to game URL immediately after the circle animation finishes
+      setTimeout(function() {
+        window.location.href = gameUrl;
+      }, 0); // Adjust the delay if needed
+    }
+  </script>

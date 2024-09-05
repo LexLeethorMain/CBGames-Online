@@ -1,0 +1,1 @@
+"use strict";function ajax(e,t){var c;try{c=new XMLHttpRequest}catch(e){try{c=new ActiveXObject("Msxml2.XMLHTTP")}catch(e){try{c=new ActiveXObject("Microsoft.XMLHTTP")}catch(e){return alert("Something broke!"),!1}}}t&&(c.onreadystatechange=function(){4==c.readyState&&t(c.responseText)}),c.open("GET",e+"&nocache="+(new Date).getTime(),!0),c.send(null)}

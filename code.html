@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Entry Page</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        body, html {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(#021027, #000);
+            color: white;
+            font-family: Arial, sans-serif;
+        }
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+            margin-top: 50px;
+        }
+        .icon-container img {
+            width: 500px;
+            height: 500px;
+        }
+        .container {
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .container input {
+            padding: 10px;
+            width: 80%;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        .container button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .container button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 20px;
+        }
+        .banned {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="icon-container">
+        <img src="favicon.ico" alt="Game Icon">
+    </div>
+    <div class="container">
+        <h1 id="message">No code entered</h1>
+        <input type="text" placeholder="Enter code here" id="codeInput">
+        <br>
+        <button id="submitButton" onclick="_y2z4r5s7()">Submit</button>
+    </div>
+    </div>
+
+    <script>
+ const _zq9t8vhbk5mk9o={"638183bec7bb1453b3da03ba00b43891d6faad020124cbbd5c329dee63223808":"User Access",de992f788418f25e8a7079887c3491b4bb22c13e840c9d625da56347e73a3209:"Owner Access"};async function _evashjifkasd(){const e=(new TextEncoder).encode("adsfuyhqjnerasd");return crypto.subtle.importKey("raw",e,{name:"HMAC",hash:{name:"SHA-256"}},!1,["sign"])}async function _y2z4r5s7(){const e=document.querySelector("input").value;if(e){const t=(new TextEncoder).encode(e),n=await _evashjifkasd(),o=await crypto.subtle.sign("HMAC",n,t),s=Array.from(new Uint8Array(o)).map((e=>e.toString(16).padStart(2,"0"))).join("");localStorage.setItem("CBKey",s),console.log("CBKey:",s),_t1u4y6v0(s)}else alert("Please enter a code")}function _t1u4y6v0(e){const t=document.getElementById("message"),n=document.getElementById("codeInput"),o=document.getElementById("submitButton"),s=localStorage.getItem("CBKey")||"";s.includes("banned")?(t.textContent=`BANNED - CBKey: ${s}`,t.classList.add("banned")):_zq9t8vhbk5mk9o[e]?(t.textContent=_zq9t8vhbk5mk9o[e],n.style.display="none",o.style.display="none"):(t.textContent="Invalid Code",n.style.display="none",o.style.display="none",setTimeout((()=>{n.style.display="block",o.style.display="block"}),6e4))}async function _u5w6y7v0(){await _y2z4r5s7()}window.onload=async function(){const e=localStorage.getItem("CBKey");e&&_t1u4y6v0(e)},window.onkeydown=function(e){"-"===e.key&&(document.getElementById("codeInput").style.display="block",document.getElementById("submitButton").style.display="block"),"="===e.key&&(localStorage.removeItem("CBKey"),document.getElementById("message").textContent="No code entered",document.getElementById("message").classList.remove("banned"),document.getElementById("codeInput").style.display="block",document.getElementById("submitButton").style.display="block")};
+    </script>
+</body>
+</html>

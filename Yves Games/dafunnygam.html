@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>da funny gam</title>
+    <style>
+        canvas {
+            border: 1px solid black;
+            display: block;
+            margin: 0 auto;
+        }
+
+        #menu {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            font-family: 'Comic Sans MS', cursive;
+        }
+
+        #pauseScreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            display: none;
+        }
+
+        #pauseButtons {
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        .button {
+            padding: 10px 20px;
+            background-color: #ccc;
+            border: 1px solid #999;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="800" height="600" style="display:none;"></canvas>
+    <div id="menu">
+        <h1>the funny game</h1>
+        <button id="startButton" class="button">Start</button>
+    </div>
+    <div id="pauseScreen">
+        <h2>Game Paused</h2>
+        <div id="pauseButtons">
+            <button id="unpauseButton" class="button">Unpause</button>
+            <button id="quitButton" class="button">Quit</button>
+        </div>
+    </div>
+    <script>
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+
+        const GRAY = "#969696";
+        const RED = "#FF0000";
+
+        let player = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 20,
+            speed: 50
+        };
+
+        let enemy = {
+            x: Math.random() * (canvas.width - 50),
+            y: Math.random() * (canvas.height - 50),
+            size: 20,
+            speed: 1 // Decreased speed of the red box
+        };
+
+        let score = 0;
+        let borderSize = 20;
+        let borderSpeed = 1 / 100000; // 100000 seconds to close
+
+        let gamePaused = false;
+
+        function drawPlayer() {
+            ctx.fillStyle = GRAY;
+            ctx.fillRect(player.x, player.y, player.size, player.size);
+        }
+
+        function drawEnemy() {
+            ctx.fillStyle = RED;
+            ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+        }
+
+        function detectCollision() {
+            if (
+                player.x < enemy.x + enemy.size &&
+                player.x + player.size > enemy.x &&
+                player.y < enemy.y + enemy.size &&
+                player.y + player.size > enemy.y
+            ) {
+                return true;
+            }
+            return false;
+        }
+
+        function moveEnemy() {
+            enemy.x += (player.x - enemy.x) / 20;
+            enemy.y += (player.y - enemy.y) / 20;
+        }
+
+        function drawScore() {
+            ctx.fillStyle = "black";
+            ctx.font = "24px Arial";
+            ctx.fillText("Score: " + score, 10, 30);
+        }
+
+        function reset() {
+            player.x = canvas.width / 2;
+            player.y = canvas.height / 2;
+            enemy.x = Math.random() * (canvas.width - 50);
+            enemy.y = Math.random() * (canvas.height - 50);
+            enemy.speed += 0.2;
+            score = 0;
+            borderSize = 20;
+        }
+
+        function update() {
+            if (!gamePaused) {
+                if (detectCollision()) {
+                    reset();
+                }
+
+                moveEnemy();
+
+                // Check collision with border
+                if (
+                    player.x < borderSize ||
+                    player.x + player.size > canvas.width - borderSize ||
+                    player.y < borderSize ||
+                    player.y + player.size > canvas.height - borderSize
+                ) {
+                    reset();
+                }
+
+                // Clear the canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw border
+                ctx.fillStyle = RED;
+                ctx.fillRect(0, 0, canvas.width, borderSize); // top
+                ctx.fillRect(0, canvas.height - borderSize, canvas.width, borderSize); // bottom
+                ctx.fillRect(0, 0, borderSize, canvas.height); // left
+                ctx.fillRect(canvas.width - borderSize, 0, borderSize, canvas.height); // right
+
+                drawPlayer();
+                drawEnemy();
+                drawScore();
+
+                score += 1; // Increase score by 1 every frame
+
+                borderSize += borderSpeed * canvas.width;
+            }
+
+            requestAnimationFrame(update);
+        }
+
+        function mouseMoveHandler(e) {
+            let rect = canvas.getBoundingClientRect();
+            player.x = e.clientX - rect.left - player.size / 2;
+            player.y = e.clientY - rect.top - player.size / 2;
+        }
+
+        document.addEventListener("mousemove", mouseMoveHandler);
+
+        setInterval(() => {
+            if (!gamePaused) {
+                score += 1;
+            }
+        }, 1000); // Increase score by 1 every second
+
+        update();
+
+        // Menu and Pause screen logic
+        const menu = document.getElementById("menu");
+        const startButton = document.getElementById("startButton");
+        const pauseScreen = document.getElementById("pauseScreen");
+        const unpauseButton = document.getElementById("unpauseButton");
+        const quitButton = document.getElementById("quitButton");
+
+        startButton.addEventListener("click", () => {
+            menu.style.display = "none";
+            canvas.style.display = "block";
+            update();
+        });
+
+        function togglePauseScreen() {
+            if (gamePaused) {
+                pauseScreen.style.display = "flex";
+            } else {
+                pauseScreen.style.display = "none";
+            }
+        }
+
+        function togglePause() {
+            gamePaused = !gamePaused;
+            togglePauseScreen();
+        }
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Escape") {
+                togglePause();
+            }
+        });
+
+        canvas.addEventListener("click", (event) => {
+            if (!gamePaused) {
+                const rect = canvas.getBoundingClientRect();
+                const mouseX = event.clientX - rect.left;
+                const mouseY = event.clientY - rect.top;
+
+                if (mouseX < 50 && mouseY < 50) {
+                    togglePause();
+                }
+            }
+        });
+
+        unpauseButton.addEventListener("click", () => {
+            togglePause();
+        });
+
+        quitButton.addEventListener("click", () => {
+            gamePaused = false;
+            togglePauseScreen();
+            reset();
+            menu.style.display = "block";
+            canvas.style.display = "none";
+        });
+    </script>
+</body>
