@@ -1,7 +1,7 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const PORT = 9094;
+const PORT = 9093;
 
 // Serve all files and subdirectories from the directory where the app is located
 app.use(express.static(__dirname));
