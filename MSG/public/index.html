@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBGames Chat</title>
+    <style>
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background-image: radial-gradient(#021027, #000);
+            font-family: Arial, sans-serif;
+        }
+        #chatbox {
+            height: calc(80% - 60px); /* Adjust height to fit the screen minus input area */
+            width: 100%;
+            border: 1px solid #ccc;
+            overflow-y: scroll;
+            background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
+            padding: 10px;
+            box-sizing: border-box;
+            white-space: pre-wrap; /* Ensures newlines are respected */
+            color: #fff; /* White text color */
+            text-wrap: auto;
+            text-size-adjust: 10;
+        }
+        #message-input {
+            width: calc(30% - 10px); /* Adjust width to fit the button */
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            margin: 5px;
+        }
+        #send-button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            background-color: #0066cc; /* Blue button color */
+            color: #fff; /* White text color */
+            cursor: pointer;
+        }
+        #send-button:hover {
+            background-color: #005bb5; /* Darker blue on hover */
+        }
+        #username {
+            width: calc(30% - 10px); /* Adjust width to fit the input area */
+            padding: 10px;
+            box-sizing: border-box;
+            border: none;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="chatbox"></div>
+    <input type="text" id="username" placeholder="Your username (apprioate names or i will delete this)" />
+    <input type="text" id="message-input" placeholder="Type a message" />
+    <button id="send-button" onclick="sendMessage()">Send</button>
+
+    <script>
+        const chatbox = document.getElementById('chatbox');
+        
+        function loadMessages() {
+            fetch('/messages')
+                .then(response => response.text())
+                .then(data => {
+                    chatbox.innerHTML = data;  // Update chatbox with formatted messages
+                    chatbox.scrollTop = chatbox.scrollHeight;  // Scroll to bottom
+                });
+        }
+
+        function sendMessage() {
+            const username = document.getElementById('username').value;
+            const message = document.getElementById('message-input').value;
+            if (username && message) {
+                fetch('/send', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ username, message })
+                }).then(() => {
+                    document.getElementById('message-input').value = '';  // Clear message input
+                    loadMessages();  // Reload messages after sending
+                });
+            }
+        }
+
+        // Load messages every 5 seconds
+        setInterval(loadMessages, 1000);
+        loadMessages();  // Initial load
+    </script>
+</body>
+</html>
