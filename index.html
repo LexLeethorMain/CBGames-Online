@@ -6,6 +6,58 @@
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="stylesheet" href="./style.css">
   <style>
+/* Chatbox positioned on the right */
+#chatbox {
+    position: fixed;
+    top: 10%;
+    right: 0;
+    height: calc(70% - 60px); /* Adjust height to allow space for chat controls */
+    width: 20%; /* 20% width for the chatbox */
+    border: 1px solid #ccc;
+    overflow-y: scroll;
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent background */
+    padding: 10px;
+    box-sizing: border-box;
+    white-space: pre-wrap; /* Ensures newlines are respected */
+    color: #fff; /* White text color */
+    border-radius: 20px;
+    font-size:0.75vw
+}
+
+/* Controls container positioned under the chatbox */
+#chat-controls {
+    position: fixed;
+    bottom: 10%;
+    right: 0;
+    width: 20%; /* Match the width of the chatbox */
+    display: flex;
+    flex-direction: column; /* Stack inputs and button vertically */
+    padding: 10px;
+    box-sizing: border-box;
+
+}
+
+/* Input fields and send button */
+#message-input, #username {
+    width: 100%; /* Take full width of the container */
+    padding: 10px;
+    box-sizing: border-box;
+    margin-bottom: 5px; /* Add space between input fields */
+    border: none;
+}
+
+#send-button {
+    padding: 10px;
+    background-color: #0066cc; /* Blue button color */
+    color: #fff; /* White text color */
+    border: none;
+    cursor: pointer;
+}
+
+#send-button:hover {
+    background-color: #005bb5; /* Darker blue on hover */
+}
+
     .clock {
       position: fixed;
       top: 0.5vw;
@@ -29,18 +81,18 @@
     }
 
     .container {
-      position: fixed;
-      top: 10%;
-      left: 50%;
-      transform: translateX(-50%);
-      z-index: 9999;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      overflow-y: scroll;
-      height: 80%;
-    }
-    .container::-webkit-scrollbar {
+    position: fixed;
+    top: 10%;
+    left: 5%;
+    width: 75%; /* Take 80% of the width, leaving 20% on the right */
+    z-index: 9999;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    overflow-y: hidden;
+    height: 80%;
+}
+container::-webkit-scrollbar {
   width: 0;
   height: 0;
 }
@@ -58,8 +110,8 @@
     .square-button {
       border: none;
       cursor: pointer;
-      width: 10vw;
-      height: 10vw;
+      width: 8vw;
+      height: 8vw;
       border-radius: 20px;
       margin: 0.5vw;
       transition: all 0.7s ease;
@@ -124,7 +176,52 @@
     <button class="square-button loaded" onclick="Load(this, 'Imgs/P8.jpg', 'P8/Pico Hub.html');" style="background-image: url('Imgs/P8.jpg'); background-size: cover;"></button>
   </div>
 </div>
+<div id="chatbox"></div>
+<div id="chat-controls">
+  <input type="text" id="username" placeholder="Your username (apprioate names or i will delete this)" />
+  <input type="text" id="message-input" placeholder="Type a message" />
+  <button id="send-button" onclick="sendMessage()">Send</button>
+  <div id="active-users">
+    <!-- Active users will be displayed here -->
+</div>
 
+</div>
+
+<script>
+  const chatbox = document.getElementById('chatbox');
+  
+  function loadMessages() {
+      fetch('/messages')
+          .then(response => response.text())
+          .then(data => {
+              chatbox.innerHTML = data;  // Update chatbox with formatted messages
+              chatbox.scrollTop = chatbox.scrollHeight;  // Scroll to bottom
+          });
+  }
+
+  function sendMessage() {
+      const username = document.getElementById('username').value;
+      const message = document.getElementById('message-input').value;
+      if (username && message) {
+          fetch('/send', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ username, message })
+          }).then(() => {
+              document.getElementById('message-input').value = '';  // Clear message input
+              loadMessages();  // Reload messages after sending
+          });
+      }
+  }
+
+  // Load messages every 5 seconds
+  setInterval(loadMessages, 1000);
+  loadMessages();  // Initial load
+
+
+</script>
 
   <script>
     function showTime() {
@@ -155,48 +252,7 @@
     // Function to show loading animation
     function Load(button, imageUrl, gameUrl) {
         window.location.href = gameUrl;}
-        let inFrame;
-try {
-    inFrame = window !== top;
-} catch (e) {
-    inFrame = true;
-}
-if (!localStorage.getItem("ab"))
-    localStorage.setItem("ab", true);
-if (!inFrame && !navigator.userAgent.includes("Firefox") && localStorage.getItem("ab") === "true") {
-    const popup = open("about:blank", "_blank");
-    if (!popup || popup.closed) {
-        alert("Please allow popups for this site. Doing so will allow us to open the site in a about:blank tab and preventing this site from showing up in your history. You can turn this off in the site settings.\n\nBy using Interstellar services, you confirm you have read and agreed to the terms listed in our Terms of Service and Privacy Policy, which can be found on the bottom of the settings page.", );
-    } else {
-        const doc = popup.document;
-        const iframe = doc.createElement("iframe");
-        const style = iframe.style;
-        const link = doc.createElement("link");
-        const name = localStorage.getItem("name") || "Dashboard";
-        const icon = localStorage.getItem("icon") || "https://du11hjcvx0uqb.cloudfront.net/dist/images/favicon-e10d657a73.ico";
-        doc.title = name;
-        link.rel = "icon";
-        link.href = icon;
-        iframe.src = location.href;
-        style.position = "fixed";
-        style.top = style.bottom = style.left = style.right = 0;
-        style.border = style.outline = "none";
-        style.width = style.height = "100%";
-        doc.head.appendChild(link);
-        doc.body.appendChild(iframe);
-        const pLink = localStorage.getItem(encodeURI("pLink")) || getRandomUrl();
-        location.replace(pLink);
-        const script = doc.createElement("script");
-        script.textContent = `
-      window.onbeforeunload = function (event) {
-        const confirmationMessage = 'Leave Site?';
-        (event || window.event).returnValue = confirmationMessage;
-        return confirmationMessage;
-      };
-    `;
-        doc.head.appendChild(script);
-    }
-}
+
   </script>
 
 
